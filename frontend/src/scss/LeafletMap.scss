@@ -1,0 +1,13 @@
+/* LeafletMap.css */
+.map-wrapper {
+  height: 400px;
+  /* or any fixed height you prefer */
+  width: 100vw;
+  position: relative;
+}
+
+.map-container {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
