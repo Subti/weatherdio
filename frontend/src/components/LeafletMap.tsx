@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import '../css/LeafletMap.css';
@@ -26,9 +26,19 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ latitude, longitude }) => {
   }, [latitude, longitude]);
 
   const LocationMarker = () => {
-    const map = useMap();
+    const map = useMapEvents({
+      click(e) {
+        setLocation({
+          latitude: e.latlng.lat,
+          longitude: e.latlng.lng,
+        });
+        map.setView(e.latlng, map.getZoom());
+      },
+    });
+
     useEffect(() => {
       map.setView([latitude, longitude], map.getZoom());
+      map.invalidateSize(); // Ensure the map is properly rendered
     }, [latitude, longitude, map]);
 
     return location.latitude !== 0 && location.longitude !== 0 ? (

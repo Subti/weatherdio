@@ -48,7 +48,7 @@ const LocationComponent: React.FC<LocationComponentProps> = ({ setLocation }) =>
       const response = await axios.get('https://api.opencagedata.com/geocode/v1/json', {
         params: {
           q: query,
-          key: process.env.OPEN_CAGE_KEY,
+          key: import.meta.env.VITE_OPEN_CAGE_KEY, // Access the environment variable
         },
       });
       const suggestions = response.data.results.map((result: any) => ({
