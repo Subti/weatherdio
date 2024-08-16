@@ -9,6 +9,11 @@ interface LeafletMapProps {
   longitude: number;
 }
 
+interface Location {
+  latitude: number;
+  longitude: number;
+}
+
 // Fix for default marker icon issue with Leaflet
 const DefaultIcon = L.Icon.Default as any;
 delete DefaultIcon.prototype._getIconUrl;
@@ -18,33 +23,33 @@ DefaultIcon.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.7.1/dist/images/marker-shadow.png',
 });
 
+const LocationMarker: React.FC<{ location: Location; setLocation: (location: Location) => void }> = ({ location, setLocation }) => {
+  const map = useMapEvents({
+    click(e) {
+      setLocation({
+        latitude: e.latlng.lat,
+        longitude: e.latlng.lng,
+      });
+      map.setView(e.latlng, map.getZoom());
+    },
+  });
+
+  useEffect(() => {
+    map.setView([location.latitude, location.longitude], map.getZoom());
+    map.invalidateSize(); // Ensure the map is properly rendered
+  }, [location.latitude, location.longitude, map]);
+
+  return location.latitude !== 0 && location.longitude !== 0 ? (
+    <Marker position={[location.latitude, location.longitude]} />
+  ) : null;
+};
+
 const LeafletMap: React.FC<LeafletMapProps> = ({ latitude, longitude }) => {
-  const [location, setLocation] = useState({ latitude, longitude });
+  const [location, setLocation] = useState<Location>({ latitude, longitude });
 
   useEffect(() => {
     setLocation({ latitude, longitude });
   }, [latitude, longitude]);
-
-  const LocationMarker = () => {
-    const map = useMapEvents({
-      click(e) {
-        setLocation({
-          latitude: e.latlng.lat,
-          longitude: e.latlng.lng,
-        });
-        map.setView(e.latlng, map.getZoom());
-      },
-    });
-
-    useEffect(() => {
-      map.setView([latitude, longitude], map.getZoom());
-      map.invalidateSize(); // Ensure the map is properly rendered
-    }, [latitude, longitude, map]);
-
-    return location.latitude !== 0 && location.longitude !== 0 ? (
-      <Marker position={[location.latitude, location.longitude]} />
-    ) : null;
-  };
 
   return (
     <>
@@ -61,7 +66,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ latitude, longitude }) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          <LocationMarker />
+          <LocationMarker location={location} setLocation={setLocation} />
         </MapContainer>
       </div>
     </>
