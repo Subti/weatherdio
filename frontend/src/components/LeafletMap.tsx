@@ -7,6 +7,7 @@ import '../css/LeafletMap.css';
 interface LeafletMapProps {
   latitude: number;
   longitude: number;
+  setLocation: (location: Location) => void; // Add setLocation prop
 }
 
 interface Location {
@@ -44,11 +45,11 @@ const LocationMarker: React.FC<{ location: Location; setLocation: (location: Loc
   ) : null;
 };
 
-const LeafletMap: React.FC<LeafletMapProps> = ({ latitude, longitude }) => {
-  const [location, setLocation] = useState<Location>({ latitude, longitude });
+const LeafletMap: React.FC<LeafletMapProps> = ({ latitude, longitude, setLocation }) => { // Accept setLocation as a prop
+  const [location, setLocalLocation] = useState<Location>({ latitude, longitude });
 
   useEffect(() => {
-    setLocation({ latitude, longitude });
+    setLocalLocation({ latitude, longitude });
   }, [latitude, longitude]);
 
   return (
@@ -66,7 +67,10 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ latitude, longitude }) => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           />
-          <LocationMarker location={location} setLocation={setLocation} />
+          <LocationMarker location={location} setLocation={(loc) => { // Update both local and parent location
+            setLocalLocation(loc);
+            setLocation(loc);
+          }} />
         </MapContainer>
       </div>
     </>

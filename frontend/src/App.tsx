@@ -1,7 +1,8 @@
 import './App.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LocationComponent from './components/LocationComponent';
 import LeafletMap from './components/LeafletMap';
+import { fetchWeatherData } from './helpers/weatherHelper';
 
 interface Location {
   latitude: number;
@@ -11,13 +12,36 @@ interface Location {
 const App: React.FC = () => {
   const [location, setLocation] = useState<Location | null>(null);
   const [mapEnabled, setMapEnabled] = useState(false);
+  const [weatherData, setWeatherData] = useState<any | null>(null);
+
+  useEffect(() => {
+    const updateWeatherData = async () => {
+      if (location) {
+        try {
+          const data = await fetchWeatherData(location);
+          setWeatherData(data);
+        } catch (error) {
+          console.error('Error updating weather data:', error);
+        }
+      }
+    };
+
+    updateWeatherData();
+  }, [location]);
 
   return (
     <div>
       <h1>Location App</h1>
       <button className="map-display-button" onClick={() => setMapEnabled(!mapEnabled)}>{mapEnabled ? 'Hide Map' : 'Show Map'}</button>
       <LocationComponent setLocation={setLocation} />
-      {location && mapEnabled && < LeafletMap latitude={location.latitude} longitude={location.longitude} />}
+      {location && mapEnabled && < LeafletMap latitude={location.latitude} longitude={location.longitude} setLocation={setLocation} />}
+      {weatherData && (
+        <div>
+          <h2>Weather Data</h2>
+          <p>Temperature: {(weatherData.main.temp - 273.15).toFixed(2)}°C | {((((weatherData.main.temp - 273.15) * 9) / 5) + 32).toFixed(2)}°F</p>
+          <p>Weather: {weatherData.weather[0].description}</p>
+        </div>
+      )}
     </div>
   );
 };
