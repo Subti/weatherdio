@@ -29,12 +29,16 @@ const App: React.FC = () => {
     updateWeatherData();
   }, [location]);
 
+  const clearLocation = () => {
+    setLocation(null);
+    setWeatherData(null); // Optionally clear weather data as well
+  };
+
   return (
     <div>
       <h1>Location App</h1>
       <button className="map-display-button" onClick={() => setMapEnabled(!mapEnabled)}>{mapEnabled ? 'Hide Map' : 'Show Map'}</button>
       <LocationComponent setLocation={setLocation} />
-      {location && mapEnabled && < LeafletMap latitude={location.latitude} longitude={location.longitude} setLocation={setLocation} />}
       {weatherData && (
         <div>
           <h2>Weather Data</h2>
@@ -42,6 +46,11 @@ const App: React.FC = () => {
           <p>Weather: {weatherData.weather[0].description}</p>
         </div>
       )}
+      <h1>
+        Latitude: {location ? parseFloat(location.latitude.toFixed(2)) : '--'}, Longitude: {location ? parseFloat(location.longitude.toFixed(2)) : '--'}
+      </h1>
+      <button className="clear-location-button" onClick={clearLocation}>Clear Location</button>
+      {location && mapEnabled && < LeafletMap latitude={location.latitude} longitude={location.longitude} setLocation={setLocation} />}
     </div>
   );
 };

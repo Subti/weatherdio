@@ -13,6 +13,7 @@ export const fetchWeatherData = async (location: Location) => {
       throw new Error('Network response was not ok, try again later or check your API key');
     }
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.error('Failed to fetch weather data:', error);

@@ -54,9 +54,6 @@ const LeafletMap: React.FC<LeafletMapProps> = ({ latitude, longitude, setLocatio
 
   return (
     <>
-      <h1>
-        Latitude: {parseFloat(location.latitude.toFixed(2))}, Longitude: {parseFloat(location.longitude.toFixed(2))}
-      </h1>
       <div className="map-wrapper">
         <MapContainer
           center={[location.latitude, location.longitude]}
