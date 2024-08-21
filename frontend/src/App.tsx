@@ -50,7 +50,7 @@ const App: React.FC = () => {
         Latitude: {location ? parseFloat(location.latitude.toFixed(2)) : '--'}, Longitude: {location ? parseFloat(location.longitude.toFixed(2)) : '--'}
       </h1>
       <button className="clear-location-button" onClick={clearLocation}>Clear Location</button>
-      {location && mapEnabled && < LeafletMap latitude={location.latitude} longitude={location.longitude} setLocation={setLocation} />}
+      {mapEnabled && < LeafletMap latitude={location ? location.latitude : 35} longitude={location ? location.longitude : -35} setLocation={setLocation} />}
     </div>
   );
 };
