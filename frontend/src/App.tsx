@@ -34,6 +34,12 @@ const App: React.FC = () => {
     setWeatherData(null); // Optionally clear weather data as well
   };
 
+  const randomLocation = () => {
+    const randomLatitude = Math.random() * 180 - 90;
+    const randomLongitude = Math.random() * 360 - 180;
+    setLocation({ latitude: randomLatitude, longitude: randomLongitude });
+  }
+
   return (
     <div>
       <h1>Location App</h1>
@@ -50,6 +56,7 @@ const App: React.FC = () => {
         Latitude: {location ? parseFloat(location.latitude.toFixed(2)) : '--'}, Longitude: {location ? parseFloat(location.longitude.toFixed(2)) : '--'}
       </h1>
       <button className="clear-location-button" onClick={clearLocation}>Clear Location</button>
+      <button className="random-location-button" onClick={randomLocation}>Random Location</button>
       {mapEnabled && < LeafletMap latitude={location ? location.latitude : 35} longitude={location ? location.longitude : -35} setLocation={setLocation} />}
     </div>
   );
